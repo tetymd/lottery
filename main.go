@@ -5,13 +5,13 @@ import (
     "log"
     "net/http"
     "encoding/json"
+    "math/rand"
+    "time"
 )
 
 type Fortune struct {
     Name     string `json:"Name"`
     Describe string `json:"Describe"`
-    Rarity   int    `json:"Rarity"`
-    Weight   int    `json:"Weight"`
 }
 
 type List struct {
@@ -21,35 +21,27 @@ type List struct {
 
 func main() {
     log.Println("server start")
-    http.HandleFunc("/api/v1/list", GetList)
+    http.HandleFunc("/api/v1/get/list", GetList)
     http.HandleFunc("/api/v1/get/random", GetRandom)
     http.ListenAndServe(":8000", nil)
 }
 
-func GetList(w http.ResponseWriter, r *http.Request) {
+func Setup() List{
     daikiti := Fortune{
         Name: "大吉",
-        Describe: "a",
-        Rarity: 3,
-        Weight: 10,
+        Describe: "おめでとう！願い事がなんでも叶うよ！",
     }
     tyukiti := Fortune{
         Name: "中吉",
-        Describe: "a",
-        Rarity: 2,
-        Weight: 30,
+        Describe: "いいことありそう！",
     }
     shokiti := Fortune{
         Name: "小吉",
-        Describe: "a",
-        Rarity: 1,
-        Weight: 40,
+        Describe: "たぶんいいことあるよ！",
     }
     kyo := Fortune{
         Name: "凶",
-        Describe: "a",
-        Rarity: 0,
-        Weight: 20,
+        Describe: "強く生きて",
     }
     list := List{
         ListName: "運勢",
@@ -60,17 +52,30 @@ func GetList(w http.ResponseWriter, r *http.Request) {
             kyo,
         },
     }
+    return list
+}
 
-    d, err := json.Marshal(list)
+func GetList(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+
+    list := Setup()
+
+    json, err := json.Marshal(list)
     if err != nil {
         fmt.Println(err)
     }
-
-    w.Header().Set("Content-Type", "application/json")
-    fmt.Fprintln(w, string(d))
+    fmt.Fprintln(w, string(json))
 }
 
 func GetRandom(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
-    fmt.Fprintln(w, "[{" + "rarity:" + "大吉" + "}]")
+
+    list := Setup()
+    rand.Seed(time.Now().UnixNano())
+
+    json, err := json.Marshal(list.Data[rand.Intn(len(list.Data))])
+    if err != nil {
+        fmt.Println(err)
+    }
+    fmt.Fprintln(w, string(json))
 }
