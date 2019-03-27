@@ -8,36 +8,45 @@ import (
     "time"
 )
 
-type Fortune struct {
+type Ticket struct {
     Name     string `json:"Name"`
     Describe string `json:"Describe"`
 }
 
-type List struct {
+type TicketList struct {
     ListName string    `json:"ListName"`
-    Data     []Fortune `json:"Data"`
+    Data     []Ticket `json:"Data"`
 }
 
-func Setup() List{
-    daikiti := Fortune{
+type Lottery interface {
+    // Show()          (TicketList, error)
+    Get()           (Ticket, error)
+    GetList()       (Ticket, error)
+    // Set(TicketList) error
+    // Add(Ticket)     error
+    // Delete(string)  error
+}
+
+func Setup() TicketList{
+    daikiti := Ticket{
         Name: "大吉",
         Describe: "おめでとう！願い事がなんでも叶うよ！",
     }
-    tyukiti := Fortune{
+    tyukiti := Ticket{
         Name: "中吉",
         Describe: "いいことありそう！",
     }
-    shokiti := Fortune{
+    shokiti := Ticket{
         Name: "小吉",
         Describe: "たぶんいいことあるよ！",
     }
-    kyo := Fortune{
+    kyo := Ticket{
         Name: "凶",
         Describe: "強く生きて",
     }
-    list := List{
+    list := TicketList{
         ListName: "運勢",
-        Data: []Fortune{
+        Data: []Ticket{
             daikiti,
             tyukiti,
             shokiti,
