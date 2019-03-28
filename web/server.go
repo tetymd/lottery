@@ -14,7 +14,7 @@ type Server struct {
     Port string
 }
 
-func (s Server) Start() {
+func (s *Server) Start() {
     http.HandleFunc("/api/v1/get", get)
     http.HandleFunc("/api/v1/get/list", get_list)
     http.ListenAndServe(s.Port, nil)
