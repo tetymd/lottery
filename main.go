@@ -2,14 +2,15 @@ package main
 
 import (
     "log"
-    "net/http"
 
-    "github.com/tetymd/lottery/api"
+    "github.com/tetymd/lottery/web"
 )
 
 func main() {
     log.Println("server start")
-    http.HandleFunc("/api/v1/get/list", api.GetList)
-    http.HandleFunc("/api/v1/get/random", api.GetRandom)
-    http.ListenAndServe(":8000", nil)
+
+    port := "8000"
+
+    s := web.Server{Port: ":" + port}
+    s.Start()
 }

@@ -1,20 +1,12 @@
 package api
 
-import (
-    "fmt"
-    "net/http"
-    "encoding/json"
-    "math/rand"
-    "time"
-)
-
 type Ticket struct {
     Name     string `json:"Name"`
     Describe string `json:"Describe"`
 }
 
 type TicketList struct {
-    ListName string    `json:"ListName"`
+    ListName string   `json:"ListName"`
     Data     []Ticket `json:"Data"`
 }
 
@@ -54,29 +46,4 @@ func Setup() TicketList{
         },
     }
     return list
-}
-
-func GetList(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-
-    list := Setup()
-
-    json, err := json.Marshal(list)
-    if err != nil {
-        fmt.Println(err)
-    }
-    fmt.Fprintln(w, string(json))
-}
-
-func GetRandom(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-
-    list := Setup()
-    rand.Seed(time.Now().UnixNano())
-
-    json, err := json.Marshal(list.Data[rand.Intn(len(list.Data))])
-    if err != nil {
-        fmt.Println(err)
-    }
-    fmt.Fprintln(w, string(json))
 }
